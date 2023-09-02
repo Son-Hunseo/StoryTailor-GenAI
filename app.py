@@ -20,9 +20,14 @@ def chat():
 
     memory = build_memory(history)
     chain = make_build_chain(memory)
-    response = chain.run(text)
-    print("response : " + response)
-    response = json.loads(response)
+    try:
+        response = chain.run(text)
+        print("response : " + response)
+        response = json.loads(response)
+    except:
+        response = chain.run(text)
+        print("response : " + response)
+        response = json.loads(response)
     AItext = response['text']
     status = response['status']
     keyword = response['keyword']
@@ -37,14 +42,24 @@ def make_story():
     keyword = request.json.get("keyword")
 
     chain_1 = story_chain()
-    story = chain_1.run(keyword)
-    print("story : " + story)
-    story = json.loads(story)
+    try:
+        story = chain_1.run(keyword)
+        print("story : " + story)
+        story = json.loads(story)
+    except:
+        story = chain_1.run(keyword)
+        print("story : " + story)
+        story = json.loads(story)
     
     chain_2 = imgPrompt_chain()
-    imgPrompt = chain_2.run(story[1:])
-    print("imgPrompt : " + imgPrompt)
-    imgPrompt = json.loads(imgPrompt)
+    try:
+        imgPrompt = chain_2.run(story[1:])
+        print("imgPrompt : " + imgPrompt)
+        imgPrompt = json.loads(imgPrompt)
+    except:
+        imgPrompt = chain_2.run(story[1:])
+        print("imgPrompt : " + imgPrompt)
+        imgPrompt = json.loads(imgPrompt)
     
     result = {"story":story, "imgPrompt":imgPrompt}
     return jsonify(result)
