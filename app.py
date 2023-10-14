@@ -5,6 +5,7 @@ from chat.make_keyword import make_build_chain
 from memory.build_memory import build_memory
 from make_story.make_story import story_chain
 from make_story.make_img_prompt import imgPrompt_chain
+from translate.do_translate import make_translate_chain
 import json
 
 app = Flask(__name__)
@@ -62,6 +63,19 @@ def make_story():
         imgPrompt = json.loads(imgPrompt)
     
     result = {"story":story, "imgPrompt":imgPrompt}
+    return jsonify(result)
+
+@app.route('/tailor/translate', methods=['POST'])
+def translate():
+    story = list(request.json.get("story"))
+    obj_lang = request.json.get("lang")
+    story.append(obj_lang)
+
+    chain = make_translate_chain()
+    trans = chain(story)
+    trans = (trans["text"])[9:]
+
+    result = {"story":trans, "lang":obj_lang}
     return jsonify(result)
 
 application = app
