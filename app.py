@@ -6,6 +6,7 @@ from memory.build_memory import build_memory
 from make_story.make_story import story_chain
 from make_story.make_img_prompt import imgPrompt_chain
 from translate.do_translate import make_translate_chain
+from quiz.make_quiz import make_quiz_chain
 import json
 
 app = Flask(__name__)
@@ -73,9 +74,25 @@ def translate():
 
     chain = make_translate_chain()
     trans = chain(story)
+    # 자꾸 앞에 'Output : ' 이 붙어서 나와서 이를 제거했다 나중에 조금 더 정교하게 바꿔야함
     trans = (trans["text"])[9:]
 
     result = {"story":trans, "lang":obj_lang}
+    return jsonify(result)
+
+@app.route('/tailor/quiz', methods=['POST'])
+def quiz():
+    sentence = list(request.json.get("sentence"))
+
+    chain = make_quiz_chain()
+    quiz = chain(sentence)
+
+    # 이것도 나중에 정교하게 바꿔야함.. 위와 같은 상황
+    # result = quiz
+    result = dict(quiz)["text"][9:]
+
+    print(result)
+
     return jsonify(result)
 
 application = app
