@@ -88,7 +88,7 @@ def quiz():
     quiz = chain(sentence)
 
     # 이것도 나중에 정교하게 바꿔야함.. 위와 같은 상황
-    # result = quiz
+    result = quiz
     result = dict(quiz)["text"][9:]
 
     print(result)
