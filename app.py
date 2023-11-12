@@ -75,9 +75,23 @@ def translate():
     chain = make_translate_chain()
     trans = chain(story)
     # 자꾸 앞에 'Output : ' 이 붙어서 나와서 이를 제거했다 나중에 조금 더 정교하게 바꿔야함
-    trans = (trans["text"])[9:]
+    print("Translate Chain")
 
-    result = {"story":trans, "lang":obj_lang}
+    cut_off_index = trans["text"].find('[')
+
+    if cut_off_index != -1:
+        trans["text"] = trans["text"][cut_off_index:]
+    else:
+        trans["text"] = trans["text"]
+
+    if obj_lang == 'zh':
+        print(trans)
+        result = {"story":eval(trans["text"].encode('utf-8')), "lang":obj_lang}
+    else :
+        print(trans)
+        result = {"story":eval(trans["text"]), "lang":obj_lang}
+    print("translate result")
+    print(result)
     return jsonify(result)
 
 @app.route('/tailor/quiz', methods=['POST'])
@@ -87,11 +101,11 @@ def quiz():
     chain = make_quiz_chain()
     quiz = chain(sentence)
 
-    # 이것도 나중에 정교하게 바꿔야함.. 위와 같은 상황
-    result = quiz
-    result = dict(quiz)["text"][9:]
-
-    print(result)
+    cut_off_index = dict(quiz)["text"].find('{')
+    if cut_off_index != -1:
+        result = dict(quiz)["text"][cut_off_index:]
+    else:
+        result = dict(quiz)["text"]
 
     return jsonify(result)
 
