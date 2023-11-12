@@ -5,7 +5,8 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
 )
 
-chat_llm = ChatOpenAI(model_name="gpt-4")
+# chat_llm = ChatOpenAI(model_name="gpt-4")
+chat_llm = ChatOpenAI(model_name="gpt-4-1106-preview")
 
 system_template="""
 너는 여러 언어로 번역을 해주는 번역가이다.

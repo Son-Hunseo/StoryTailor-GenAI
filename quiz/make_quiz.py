@@ -5,7 +5,8 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
 )
 
-chat_llm = ChatOpenAI(model_name="gpt-4")
+# chat_llm = ChatOpenAI(model_name="gpt-4")
+chat_llm = ChatOpenAI(model_name="gpt-4-1106-preview")
 
 system_template="""
 너는 빈칸을 추론하는 문제를 생성하는 문제 생성기야.
