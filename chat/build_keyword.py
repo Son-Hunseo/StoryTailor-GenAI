@@ -47,7 +47,7 @@ system_message_prompt = SystemMessagePromptTemplate.from_template(system_templat
 
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
 
-def make_build_chain(memory):
+async def keyword_chain(memory):
     build_chain = LLMChain(
         llm=chat_llm,
         prompt=chat_prompt,

@@ -43,7 +43,7 @@ system_message_prompt = SystemMessagePromptTemplate.from_template(system_templat
 
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
 
-def imgPrompt_chain():
+async def imgPrompt_chain():
     chain = LLMChain(
         llm=chat_llm,
         prompt=chat_prompt,

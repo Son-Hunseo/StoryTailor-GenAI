@@ -29,7 +29,7 @@ system_message_prompt = SystemMessagePromptTemplate.from_template(system_templat
 
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
 
-def make_quiz_chain():
+async def quiz_chain():
     build_chain = LLMChain(
         llm=chat_llm,
         prompt=chat_prompt,

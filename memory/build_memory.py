@@ -1,6 +1,6 @@
 from langchain.memory import ConversationBufferWindowMemory
 
-def build_memory(history):
+async def memory_chain(history):
 
     memory = ConversationBufferWindowMemory(k=5, memory_key="chat_history", return_messages=True)
     print(history)
