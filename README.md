@@ -10,6 +10,13 @@
 <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white"> <img src="https://img.shields.io/badge/LangChain-00B265?style=for-the-badge&logo=&logoColor=white">
 ### v0.0.1~ (이후 디벨롭)
 <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"> <img src="https://img.shields.io/badge/LangChain-00B265?style=for-the-badge&logo=&logoColor=white">
+## Dependencies
+- LangChain
+  - 0.0.333
+- FastAPI
+  - 0.95.1
+- Pydantic
+  - 1.10.14 
 ## API 명세
 | 기능 | METHOD | URL | request | response | 비고 |
 | ---- | ---- | ---- | ---- | ---- | ---- |
