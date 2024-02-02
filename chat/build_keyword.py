@@ -5,7 +5,7 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
 )
 
-chat_llm = ChatOpenAI(model_name="gpt-4")
+chat_llm = ChatOpenAI(model_name="gpt-4-0125-preview")
 
 system_template="""
 You act like a kindergarten teacher asking about a child's drawing.

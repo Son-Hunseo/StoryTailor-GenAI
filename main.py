@@ -85,7 +85,7 @@ async def chat(request_data: ChatRequest):
     recoKeyword = response['recoKeyword']
 
     result = ChatResponse(
-        msgNum=str(msgNum + 1),
+        msgNum=msgNum + 1,
         sessionId=sessionId,
         msgType="AI",
         text=AItext,

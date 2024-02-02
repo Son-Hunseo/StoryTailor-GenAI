@@ -5,8 +5,7 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
 )
 
-# chat_llm = ChatOpenAI(model_name="gpt-4")
-chat_llm = ChatOpenAI(model_name="gpt-4-1106-preview")
+chat_llm = ChatOpenAI(model_name="gpt-4-0125-preview")
 
 system_template="""
 You're a writer who writes fairy tales to the level of 5-7 year olds.
