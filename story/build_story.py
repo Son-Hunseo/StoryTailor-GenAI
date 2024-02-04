@@ -1,13 +1,12 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-)
+from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from typing import List, Dict
+from langchain_core.pydantic_v1 import BaseModel, Field
 
 chat_llm = ChatOpenAI(model_name="gpt-4-0125-preview")
 
-system_template="""
+prompt_template="""
 You're a writer who writes fairy tales to the level of 5-7 year olds.
 
 [규칙]
@@ -24,13 +23,14 @@ You're a writer who writes fairy tales to the level of 5-7 year olds.
 키워드 : {user_input}
 """
 
-system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["user_input"]
+)
 
-chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
+class Story(BaseModel):
+    story: List[str] = Field(description="스토리")
+
+parser = JsonOutputParser(pydantic_object=Story)
 
 async def story_chain():
-    chain = LLMChain(
-        llm=chat_llm,
-        prompt=chat_prompt,
-    )
-    return chain
+    return PROMPT | chat_llm | parser

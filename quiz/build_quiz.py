@@ -1,13 +1,12 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-)
+from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from typing import List, Dict
+from langchain_core.pydantic_v1 import BaseModel, Field
 
 chat_llm = ChatOpenAI(model_name="gpt-4-0125-preview")
 
-system_template="""
+prompt_template="""
 너는 빈칸을 추론하는 문제를 생성하는 문제 생성기야.
 너는 Input이 들어오면 Input에 빈칸을 만들어서 Output을 출력한다.
 빈칸은 ()로 나타낸다.
@@ -21,16 +20,19 @@ Input 예시:
 Output 예시:
 {{"sentence" : "티라노사우루스가 () 있다.", "options" : ["뛰고", "날고", "자고"], "answer" : "뛰고"}}
 
-Input : {input}
+Input : {user_input}
 """
 
-system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["user_input"]
+)
 
-chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
+class Quiz(BaseModel):
+    sentence: str = Field(description="문제")
+    options: List[str] = Field(description="선지")
+    answer: str = Field(description="정답")
+
+parser = JsonOutputParser(pydantic_object=Quiz)
 
 async def quiz_chain():
-    build_chain = LLMChain(
-        llm=chat_llm,
-        prompt=chat_prompt,
-    )
-    return build_chain
+    return PROMPT | chat_llm | parser

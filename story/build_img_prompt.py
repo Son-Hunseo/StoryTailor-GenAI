@@ -1,13 +1,12 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-)
+from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from typing import List, Dict
+from langchain_core.pydantic_v1 import BaseModel, Field
 
 chat_llm = ChatOpenAI(model_name="gpt-4-0125-preview")
 
-system_template="""
+prompt_template="""
 You're prompt engineer who make prompt for Image Generative AI.
 
 [Rule]
@@ -38,13 +37,14 @@ story : 로봇은 많은 연습 끝에 거대한 파도를 서핑할 수 있게 
 story : {user_input}
 """
 
-system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["user_input"]
+)
 
-chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt])
+class imgPrompt(BaseModel):
+    imgPrompt: List[str] = Field(description="이미지 프롬프트")
+
+parser = JsonOutputParser(pydantic_object=imgPrompt)
 
 async def imgPrompt_chain():
-    chain = LLMChain(
-        llm=chat_llm,
-        prompt=chat_prompt,
-    )
-    return chain
+    return PROMPT | chat_llm | parser

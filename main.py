@@ -70,14 +70,10 @@ async def chat(request_data: ChatRequest):
 
     memory = await memory_chain(history)
     chain = await keyword_chain(memory)
-    try:
-        response = await chain.arun(text)
-        print("response : " + response)
-        response = json.loads(response)
-    except:
-        response = await chain.arun(text)
-        print("response : " + response)
-        response = json.loads(response)
+    response = await chain.ainvoke({"user_input":text})
+    response = response["text"]
+    print("response : " + response)
+    response = json.loads(response)
 
     AItext = response['text']
     status = response['status']
@@ -100,24 +96,10 @@ async def make_story(request_data: StoryRequest):
     keyword = request_data.keyword
 
     chain_1 = await story_chain()
-    try:
-        story = await chain_1.arun(keyword)
-        print("story : " + story)
-        story = json.loads(story)
-    except:
-        story = await chain_1.arun(keyword)
-        print("story : " + story)
-        story = json.loads(story)
+    story = await chain_1.ainvoke({"user_input": keyword})
 
     chain_2 = await imgPrompt_chain()
-    try:
-        imgPrompt = await chain_2.arun(story[1:])
-        print("imgPrompt : " + imgPrompt)
-        imgPrompt = json.loads(imgPrompt)
-    except:
-        imgPrompt = await chain_2.arun(story[1:])
-        print("imgPrompt : " + imgPrompt)
-        imgPrompt = json.loads(imgPrompt)
+    imgPrompt = await chain_2.ainvoke({"user_input": story[1:]})
 
     result = StoryResponse(
         story = story,
@@ -132,54 +114,37 @@ async def translate(request_data: TranslateRequest):
     story.append(obj_lang)
 
     chain = await translate_chain()
-    trans = await chain.arun(story)
-    # 자꾸 앞에 'Output : ' 이 붙어서 나와서 이를 제거했다 나중에 조금 더 정교하게 바꿔야함
-    print("Translate Chain")
+    trans = await chain.ainvoke({"user_input": story})
+    trans = trans.content
 
+    # 자꾸 앞에 'Output : ' 이 붙어서 나와서 이를 제거했다
     cut_off_index = trans.find('[')
-
     if cut_off_index != -1:
         trans = trans[cut_off_index:]
     else:
         trans = trans
 
     if obj_lang == 'zh':
-        print(trans)
         result = TranslateResponse(
             story = eval(trans.encode('utf-8')),
             lang = obj_lang
         )
     else:
-        print(trans)
         result = TranslateResponse(
             story = eval(trans),
             lang = obj_lang
         )
-    print("translate result")
-    print(result)
     return result
 
 @app.post('/tailor/quiz')
 async def quiz(request_data: QuizRequest):
     sentence = request_data.sentence
-
     chain = await quiz_chain()
-    quiz = await chain.arun(sentence)
+    quiz = await chain.ainvoke({"user_input": sentence})
 
-    cut_off_index = quiz.find('{')
-    if cut_off_index != -1:
-        data = json.loads(quiz[cut_off_index:])
-        result = QuizResponse(
-            sentence = data["sentence"],
-            options = data["options"],
-            answer = data["answer"]
-        )
-    else:
-        data = json.loads(quiz)
-        result = QuizResponse(
-            sentence=data["sentence"],
-            options=data["options"],
-            answer=data["answer"]
-        )
-
+    result = QuizResponse(
+        sentence = quiz["sentence"],
+        options = quiz["options"],
+        answer = quiz["answer"]
+    )
     return result
