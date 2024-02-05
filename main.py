@@ -25,7 +25,7 @@ class ChatRequest(BaseModel):
     msgNum: int
     msgType: str
     sessionId: int
-    history: Dict[str, List[str]]
+    history: Optional[Dict[str, List[str]]]
     text: str
 
 class ChatResponse(BaseModel):
